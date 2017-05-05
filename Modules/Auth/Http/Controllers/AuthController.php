@@ -10,25 +10,35 @@ use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Validator;
 use Modules\Auth\Http\Requests\LoginRequest;
-
+use \Carbon\Carbon;
 class AuthController extends Controller
 {
     public function authenticate(LoginRequest $request)
     {
-        // grab credentials from the request
-        $credentials = $request->only('email', 'password');
-
         try {
-            // attempt to verify the credentials and create a token for the user
-            if (! $token = JWTAuth::attempt($credentials)) {
-                return response()->json(['error' => 'Verifique suas credenciais e tente novamente'], 401);
-            }
+            $token = JWTAuth::attempt($request->only('email', 'password'), [
+                'expiration' => Carbon::now()->addHours(8)->timestamp
+                ]);
         } catch (JWTException $e) {
-            // something went wrong whilst attempting to encode the token
-            return response()->json(['error' => 'could_not_create_token'], 500);
+            return response()->json([
+                'error' => 'Não foi possível autenticar',
+                ], 500);
         }
 
-        // all good so return the token
-        return response()->json(compact('token'));
+        if (!$token) {
+            return response()->json([
+                'error' => 'Não foi possível autenticar, verifique suas credenciais e tente novamente!',
+                ], 401);
+        } else {
+            $data = [];
+            $meta = [];
+
+            // $data['user'] = $request->user();
+            $meta['access_token'] = $token;
+            $meta['expires_in'] = Carbon::now()->addHours(8)->timestamp;
+
+            return response()->json($meta);
+        }
     }
+
 }

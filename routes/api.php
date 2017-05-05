@@ -13,6 +13,6 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('jwt.auth')->get('/user', function (Request $request) {
+Route::middleware('jwt.auth')->get('/me', function (Request $request) {
     return $request->user();
 });
