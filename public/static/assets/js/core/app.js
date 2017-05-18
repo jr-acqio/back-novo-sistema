@@ -34,10 +34,10 @@ $(function() {
     function containerHeight() {
       // 615 -48
       // console.log($('.navbar-fixed-bottom').outerHeight());
-        // var availableHeight = $(window).height() - $('.page-container').offset().top;// - $('.navbar-fixed-bottom').outerHeight();
-
-        // $('.page-container').attr('style', 'min-height:' + availableHeight + 'px');
-        $('.page-container').attr('style', 'min-height:' + '100vh');
+        var availableHeight = $(window).height() - $('.page-container').offset().top;// - $('.navbar-fixed-bottom').outerHeight();
+        // console.log($('.navbar').outerHeight());
+        $('.page-container').attr('style', 'min-height:' + availableHeight + 'px');
+        // $('.page-container').attr('style', 'min-height:' + '100vh');
     }
 
     // Initialize
