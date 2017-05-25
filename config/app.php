@@ -169,7 +169,7 @@ return [
         Laravel\Tinker\TinkerServiceProvider::class,
         Nwidart\Modules\LaravelModulesServiceProvider::class,
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
-
+        OwenIt\Auditing\AuditingServiceProvider::class,
         /*
          * Application Service Providers...
          */

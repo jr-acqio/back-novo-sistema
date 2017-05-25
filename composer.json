@@ -9,6 +9,7 @@
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
         "nwidart/laravel-modules": "^1.20",
+        "owen-it/laravel-auditing": "^4.0",
         "tymon/jwt-auth": "0.5.*"
     },
     "require-dev": {
