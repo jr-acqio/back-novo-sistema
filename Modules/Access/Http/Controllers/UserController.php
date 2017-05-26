@@ -44,9 +44,6 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-//        if(User::all()->count() > 1){
-//            User::all()->last()->delete();
-//        }
         $user = new User(['name'=> 'Jose','email'=>'junior@hotmail.com','password'=>Hash::make('123456')]);
         $user->save();
 
