@@ -98,17 +98,6 @@ class Builder
     }
 
     /**
-     * Create and return and un-saved model instance.
-     *
-     * @param  array  $attributes
-     * @return \Illuminate\Database\Eloquent\Model
-     */
-    public function make(array $attributes = [])
-    {
-        return $this->newModelInstance($attributes);
-    }
-
-    /**
      * Register a new global scope.
      *
      * @param  string  $identifier
@@ -194,7 +183,7 @@ class Builder
     /**
      * Add a basic where clause to the query.
      *
-     * @param  string|array|\Closure  $column
+     * @param  string|\Closure  $column
      * @param  string  $operator
      * @param  mixed  $value
      * @param  string  $boolean
@@ -266,7 +255,7 @@ class Builder
      */
     public function find($id, $columns = ['*'])
     {
-        if (is_array($id) || $id instanceof Arrayable) {
+        if (is_array($id)) {
             return $this->findMany($id, $columns);
         }
 

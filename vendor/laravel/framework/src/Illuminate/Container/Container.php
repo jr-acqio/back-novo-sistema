@@ -576,10 +576,8 @@ class Container implements ArrayAccess, ContainerContract
      */
     protected function resolve($abstract, $parameters = [])
     {
-        $abstract = $this->getAlias($abstract);
-
         $needsContextualBuild = ! empty($parameters) || ! is_null(
-            $this->getContextualConcrete($abstract)
+            $this->getContextualConcrete($abstract = $this->getAlias($abstract))
         );
 
         // If an instance of the type is currently being managed as a singleton we'll
@@ -715,7 +713,7 @@ class Container implements ArrayAccess, ContainerContract
         // hand back the results of the functions, which allows functions to be
         // used as resolvers for more fine-tuned resolution of these objects.
         if ($concrete instanceof Closure) {
-            return $concrete($this, $this->getLastParameterOverride());
+            return $concrete($this, end($this->with));
         }
 
         $reflector = new ReflectionClass($concrete);
@@ -793,9 +791,7 @@ class Container implements ArrayAccess, ContainerContract
      */
     protected function hasParameterOverride($dependency)
     {
-        return array_key_exists(
-            $dependency->name, $this->getLastParameterOverride()
-        );
+        return array_key_exists($dependency->name, end($this->with));
     }
 
     /**
@@ -806,17 +802,7 @@ class Container implements ArrayAccess, ContainerContract
      */
     protected function getParameterOverride($dependency)
     {
-        return $this->getLastParameterOverride()[$dependency->name];
-    }
-
-    /**
-     * Get the last parameter override.
-     *
-     * @return array
-     */
-    protected function getLastParameterOverride()
-    {
-        return count($this->with) ? end($this->with) : [];
+        return end($this->with)[$dependency->name];
     }
 
     /**

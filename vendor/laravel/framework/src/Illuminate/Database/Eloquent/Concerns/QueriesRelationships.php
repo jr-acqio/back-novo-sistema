@@ -155,10 +155,6 @@ trait QueriesRelationships
      */
     public function withCount($relations)
     {
-        if (empty($relations)) {
-            return $this;
-        }
-
         if (is_null($this->query->columns)) {
             $this->query->select([$this->query->from.'.*']);
         }

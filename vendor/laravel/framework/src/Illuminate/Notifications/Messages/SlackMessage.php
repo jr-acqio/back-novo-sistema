@@ -126,7 +126,7 @@ class SlackMessage
     /**
      * Set a custom image icon the message should use.
      *
-     * @param  string  $image
+     * @param  string $channel
      * @return $this
      */
     public function image($image)
