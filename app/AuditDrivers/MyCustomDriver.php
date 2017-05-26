@@ -48,13 +48,12 @@ class MyCustomDriver implements AuditDriver
 
             if ($forRemoval > 0) {
                 $model->audits()
-                    ->orderBy('created_at', 'asc')
+                    ->orderBy('created_at','asc')
                     ->limit($forRemoval)
                     ->delete();
                 return true;
             }
         }
-
         return false;
     }
 }
