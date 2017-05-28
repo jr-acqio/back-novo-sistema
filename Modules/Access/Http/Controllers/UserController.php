@@ -2,21 +2,23 @@
 
 namespace Modules\Access\Http\Controllers;
 
-use App\AuditDrivers\MyCustomDriver;
-use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Hash;
+use Mockery\Exception;
+use Modules\Access\Contracts\UserRepository;
 use OwenIt\Auditing\Drivers\Database;
 use OwenIt\Auditing\Events\Auditing;
+use Prettus\Validator\Exceptions\ValidatorException;
 
 class UserController extends Controller
 {
     private $auditor;
-    public function __construct(Database $auditor)
+    private $repository;
+    public function __construct(Database $auditor, UserRepository $repository)
     {
         $this->auditor = $auditor;
+        $this->repository = $repository;
     }
 
     /**
@@ -44,12 +46,17 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $user = new User(['name'=> 'Jose','email'=>'junior@hotmail.com','password'=>Hash::make('123456')]);
-        $user->save();
-
-        event(new Auditing($user,$this->auditor));
-
-        return response()->json(true);
+        try{
+            if($user = $this->repository->create($request->all())){
+                event(new Auditing($user,$this->auditor));
+                return response()->json('Usuário '. $user->name . ' registrado com sucesso!',200);
+            }
+        }catch (ValidatorException $e){
+            return response()->json($e->getMessageBag(),422);
+        }
+        catch (\Exception $e){
+            return response()->json($e->getMessage(),400);
+        }
     }
 
     /**
