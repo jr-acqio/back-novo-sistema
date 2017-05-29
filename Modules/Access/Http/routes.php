@@ -1,6 +1,7 @@
 <?php
 
-Route::group(['middleware' => 'jwt.auth', 'prefix' => 'access', 'namespace' => 'Modules\Access\Http\Controllers'], function()
+Route::group(['middleware' => 'web', 'prefix' => 'api', 'namespace' => 'Modules\Access\Http\Controllers'], function()
 {
-    Route::resource('user','UserController');
+    Route::resource('user','UserController', ['except'=> ['edit','create'] ]);
+    Route::get('teste/{user}','UserController@update');
 });

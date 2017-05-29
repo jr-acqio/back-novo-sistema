@@ -48,6 +48,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
 
     public function create(array $attributes)
     {
+
         if (!is_null($this->validator)) {
             // we should pass data that has been casts by the model
             // to make sure data type are same because validator may need to use
@@ -56,7 +57,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
             $this->validator->with($attributes)->passesOrFail(ValidatorInterface::RULE_CREATE);
         }
         if ($this->verifyUser($attributes) >= 1){
-            throw new Exception('Usuário '. $attributes['username'].' já cadastrado no Sistema');
+            throw new Exception('Usuário '. $attributes['email'].' já cadastrado no Sistema');
         }
 
         $this->model->name = ucfirst($attributes['name']);
@@ -69,6 +70,37 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
             throw new Exception("Erro ao gravar registro no banco!");
         }
     }
+    public function update(array $attributes, $id)
+    {
+        $this->applyScope();
+
+//        if (!is_null($this->validator)) {
+//            // we should pass data that has been casts by the model
+//            // to make sure data type are same because validator may need to use
+//            // this data to compare with data that fetch from database.
+//            $attributes = $this->model->newInstance()->forceFill($attributes)->makeVisible($this->model->getHidden())->toArray();
+//
+//            $this->validator->with($attributes)->setId($id)->passesOrFail(ValidatorInterface::RULE_UPDATE);
+//        }
+
+//        if ($this->model->where('email','joselito.junior@esfera5.com.br')->where('id','<>',$id)->get()->count() >= 1){
+//            throw new Exception('Usuário '. $attributes['email'].' já cadastrado no Sistema');
+//        }
+
+        $attributes['password'] = bcrypt('123456');
+        $model = $this->model->findOrFail($id);
+//        $model->name = $attributes['name'];
+        $model->password = $attributes['password'];
+//        dd($model);
+//        $model->email = $attributes['email'];
+
+//        $model->fill($attributes);
+        $model->save();
+        return $model;
+//        $this->resetModel();
+
+//        return $this->parserResult($model);
+    }
 
     private function verifyUser(array $attributes){
         $user = $this->model->query()
@@ -77,4 +109,5 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
 
         return $user;
     }
+
 }
