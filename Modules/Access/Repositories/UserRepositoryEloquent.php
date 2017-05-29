@@ -87,9 +87,9 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
             throw new Exception('Usuário '. $attributes['email'].' já cadastrado no Sistema');
         }
 
-        $attributes['password'] = bcrypt('123456');
+        $attributes['password'] = bcrypt($attributes['password']);
         $model = $this->model->findOrFail($id);
-
+        unset($attributes['password_confirmation']);
         $model->fill($attributes);
         $model->save();
         return $model;

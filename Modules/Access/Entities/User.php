@@ -31,6 +31,6 @@ class User extends Authenticatable implements AuditableContract
 
     public function resolveUserId()
     {
-        return request()->user()->id;
+        return request()->user() ? request()->user()->id : null;
     }
 }
