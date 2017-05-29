@@ -74,32 +74,25 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
     {
         $this->applyScope();
 
-//        if (!is_null($this->validator)) {
-//            // we should pass data that has been casts by the model
-//            // to make sure data type are same because validator may need to use
-//            // this data to compare with data that fetch from database.
-//            $attributes = $this->model->newInstance()->forceFill($attributes)->makeVisible($this->model->getHidden())->toArray();
-//
-//            $this->validator->with($attributes)->setId($id)->passesOrFail(ValidatorInterface::RULE_UPDATE);
-//        }
+        if (!is_null($this->validator)) {
+            // we should pass data that has been casts by the model
+            // to make sure data type are same because validator may need to use
+            // this data to compare with data that fetch from database.
+            $attributes = $this->model->newInstance()->forceFill($attributes)->makeVisible($this->model->getHidden())->toArray();
 
-//        if ($this->model->where('email','joselito.junior@esfera5.com.br')->where('id','<>',$id)->get()->count() >= 1){
-//            throw new Exception('Usuário '. $attributes['email'].' já cadastrado no Sistema');
-//        }
+            $this->validator->with($attributes)->setId($id)->passesOrFail(ValidatorInterface::RULE_UPDATE);
+        }
+
+        if ($this->model->where('email',$attributes['email'])->where('id','<>',$id)->get()->count() >= 1){
+            throw new Exception('Usuário '. $attributes['email'].' já cadastrado no Sistema');
+        }
 
         $attributes['password'] = bcrypt('123456');
         $model = $this->model->findOrFail($id);
-//        $model->name = $attributes['name'];
-        $model->password = $attributes['password'];
-//        dd($model);
-//        $model->email = $attributes['email'];
 
-//        $model->fill($attributes);
+        $model->fill($attributes);
         $model->save();
         return $model;
-//        $this->resetModel();
-
-//        return $this->parserResult($model);
     }
 
     private function verifyUser(array $attributes){

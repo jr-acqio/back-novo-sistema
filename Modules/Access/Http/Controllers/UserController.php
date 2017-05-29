@@ -1,7 +1,5 @@
 <?php
-
 namespace Modules\Access\Http\Controllers;
-
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
@@ -11,7 +9,6 @@ use Modules\Access\Entities\User;
 use OwenIt\Auditing\Drivers\Database;
 use OwenIt\Auditing\Events\Auditing;
 use Prettus\Validator\Exceptions\ValidatorException;
-
 class UserController extends Controller
 {
     private $auditor;
@@ -21,7 +18,6 @@ class UserController extends Controller
         $this->auditor = $auditor;
         $this->repository = $repository;
     }
-
     /**
      * Display a listing of the resource.
      * @return Response
@@ -30,7 +26,6 @@ class UserController extends Controller
     {
         return view('access::index');
     }
-
     /**
      * Show the form for creating a new resource.
      * @return Response
@@ -39,7 +34,6 @@ class UserController extends Controller
     {
         return view('access::create');
     }
-
     /**
      * Store a newly created resource in storage.
      * @param  Request $request
@@ -59,7 +53,6 @@ class UserController extends Controller
             return response()->json($e->getMessage(),400);
         }
     }
-
     /**
      * Show the specified resource.
      * @return Response
@@ -68,7 +61,6 @@ class UserController extends Controller
     {
         return view('access::show');
     }
-
     /**
      * Show the form for editing the specified resource.
      * @return Response
@@ -77,7 +69,6 @@ class UserController extends Controller
     {
         return view('access::edit');
     }
-
     /**
      * Update the specified resource in storage.
      * @param  Request $request
@@ -98,7 +89,6 @@ class UserController extends Controller
             return response()->json(['error'=>$e->getMessage()],400);
         }
     }
-
     /**
      * Remove the specified resource from storage.
      * @return Response
