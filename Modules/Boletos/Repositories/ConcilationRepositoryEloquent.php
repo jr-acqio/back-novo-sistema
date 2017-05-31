@@ -88,7 +88,7 @@ class ConcilationRepositoryEloquent extends BaseRepository implements Concilatio
             $api_key = 'api-key_W1J1KwcnNor-4VHP58KLuXv8UcKqIY31p8AwIuXPw1s=';
         }else{
             $url = 'https://app.boletocloud.com/api/v1/arquivos/cnab/retornos';
-            $api_key = 'api-key_TEwD1_gB4HzmHpH9It8Up3nJmcaNTwALJ_hZRX5olCA=';
+            $api_key = 'api-key_4EdpeTuf5MwzipcmXYTmCdv5wqYLRCgT3shDb41Pzu4=';
         }
 
         $data_create = array(
