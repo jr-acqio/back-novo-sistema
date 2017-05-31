@@ -6,15 +6,16 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-use Modules\Boletos\Contracts\BoletoRepository;
+use Mockery\Exception;
+use Modules\Boletos\Contracts\ConcilationRepository;
+use Prettus\Validator\Exceptions\ValidatorException;
 
-class BoletosController extends Controller
+class ConciliationController extends Controller
 {
     use ValidatesRequests;
-
     private $repository;
 
-    function __construct(BoletoRepository $repository)
+    function __construct(ConcilationRepository $repository)
     {
         $this->repository = $repository;
     }
@@ -44,6 +45,25 @@ class BoletosController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate(
+            $request,
+            [
+                'file' => 'required|mimetypes:text/plain'
+            ],
+            [
+                'file.required'=>'Informe o arquivo a ser processado!',
+                'file.mimetypes' => 'Informe um arquivo válido!'
+            ]
+        );
+        try{
+            return $this->repository->processReturn($request->all());
+
+        }catch(ValidatorException $exception){
+            return response()->json(['error'=>$exception->getMessageBag()],422);
+        }
+        catch(Exception $exception){
+            return response()->json(['error'=>$exception->getMessage()],400);
+        }
     }
 
     /**

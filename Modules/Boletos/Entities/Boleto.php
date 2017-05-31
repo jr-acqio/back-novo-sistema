@@ -5,10 +5,12 @@ namespace Modules\Boletos\Entities;
 use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
+use OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
-class Boleto extends Model implements Transformable
+class Boleto extends Model implements Transformable, AuditableContract
 {
-    use TransformableTrait;
+    use TransformableTrait, Auditable;
 
     protected $connection = "mysql_boletos";
 
@@ -25,4 +27,8 @@ class Boleto extends Model implements Transformable
         return $this->hasOne(BoletoSolicitadoFranchising::class,'idboleto_solicitado');
     }
 
+    public function resolveUserId()
+    {
+        return request()->user() ? request()->user()->id : null;
+    }
 }
