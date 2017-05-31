@@ -161,10 +161,13 @@ class ConcilationRepositoryEloquent extends BaseRepository implements Concilatio
             try{
                 if(!$this->verifyConciliation($data_create['payload']['arquivo']['meta']['token'])){
                     DB::beginTransaction();
-                    $this->conciliation($body);
+                    $titulos_pagos = $this->conciliation($body);
                     if($this->create($data_create)){
                         DB::commit();
-                        return response()->json('Arquivo processado com sucesso!',200);
+                        return response()->json([
+                            'msg'=>'Arquivo processado com sucesso!',
+                            'info' => $titulos_pagos
+                        ],200);
                     }
                 }else{
                     throw new Exception("Arquivo já processado!");
@@ -193,6 +196,7 @@ class ConcilationRepositoryEloquent extends BaseRepository implements Concilatio
     {
         $data = json_decode($response,true);
         $titulos = $data['arquivo']['titulos'];
+        $titulos_pagos = array();
         foreach ($titulos as $k => $v){
             //Se o boleto ainda existir no banco
             if($current = Boleto::where('token',$v['token'])->first()){
@@ -201,11 +205,13 @@ class ConcilationRepositoryEloquent extends BaseRepository implements Concilatio
                     if($v2['situacao'] == 'LIQUIDACAO'){
                         $current->situacao = 1;
                         $current->save();
+                        array_push($titulos_pagos, $current);
                         event(new Auditing($current,new Database));
                     }
                 }
             }
         }
+        return $titulos_pagos;
     }
     private function verifyConciliation($criteria){
         return $this->findByField('payload->arquivo->meta->token',$criteria)->count();
