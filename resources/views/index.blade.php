@@ -3,4 +3,4 @@
       js=d.createElement(s);fs=d.getElementsByTagName(s)[0];
       js.src='https://apis.google.com/js/platform.js';
       fs.parentNode.insertBefore(js,fs);js.onload=function(){g.load('analytics');};
-    }(window,document,'script'));</script><link href=/static/css/app.a567c0a07c590dfcfd107190d2027ba3.css rel=stylesheet></head><body><div id=app class=""><app></app></div><script type=text/javascript src=/static/js/manifest.ef06dc4caf167f679c9c.js></script><script type=text/javascript src=/static/js/vendor.7207f7b4513034fda999.js></script><script type=text/javascript src=/static/js/app.c31634dcd5ab4a0e3099.js></script></body></html>
+    }(window,document,'script'));</script><link href=/static/css/app.261ab9a84f83b9a93022c312b2a56304.css rel=stylesheet></head><body><div id=app class=""><app></app></div><script type=text/javascript src=/static/js/manifest.f5d5d009ee7290624ac6.js></script><script type=text/javascript src=/static/js/vendor.e50773cb542de841086d.js></script><script type=text/javascript src=/static/js/app.7d12fe1c055c30196d63.js></script></body></html>
