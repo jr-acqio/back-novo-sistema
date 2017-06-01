@@ -16,8 +16,9 @@ class AuthController extends Controller
     public function authenticate(LoginRequest $request)
     {
         try {
+            $expired = Carbon::now()->addHours(8)->timestamp;
             $token = JWTAuth::attempt($request->only('email', 'password'), [
-                'expiration' => Carbon::now()->addHours(8)->timestamp
+                'expiration' => $expired
                 ]);
         } catch (JWTException $e) {
             return response()->json([
@@ -35,7 +36,7 @@ class AuthController extends Controller
 
             // $data['user'] = $request->user();
             $meta['access_token'] = $token;
-            $meta['expires_in'] = Carbon::now()->addHours(8)->timestamp;
+            $meta['expires_in'] = $expired;
 
             return response()->json($meta);
         }

@@ -27,6 +27,10 @@ class Boleto extends Model implements Transformable, AuditableContract
         return $this->hasOne(BoletoSolicitadoFranchising::class,'idboleto_solicitado');
     }
 
+    public function ocorrencias(){
+        return $this->hasMany(BoletoOcorrencia::class,'id_boleto');
+    }
+
     public function resolveUserId()
     {
         return request()->user() ? request()->user()->id : null;

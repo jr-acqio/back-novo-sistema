@@ -3,6 +3,7 @@
 namespace Modules\Boletos\Repositories;
 
 use Mockery\Exception;
+use Modules\Boletos\Entities\BoletoOcorrencia;
 use Modules\Boletos\Validators\ConciliationValidator;
 use Modules\Boletos\Contracts\ConcilationRepository;
 use Modules\Boletos\Entities\Boleto;
@@ -54,14 +55,12 @@ class ConcilationRepositoryEloquent extends BaseRepository implements Concilatio
             'boletos/retorno', $attributes['arquivo']->getClientOriginalName()
         );
         $attributes += array('file_path'=>$path);
-
         unset($attributes['arquivo']);
         if (!is_null($this->validator)) {
             // we should pass data that has been casts by the model
             // to make sure data type are same because validator may need to use
             // this data to compare with data that fetch from database.
             $attributes = $this->model->newInstance()->forceFill($attributes)->makeVisible($this->model->getHidden())->toArray();
-
             $this->validator->with($attributes)->passesOrFail(ValidatorInterface::RULE_CREATE);
         }
         $model = $this->model->newInstance();
@@ -76,13 +75,11 @@ class ConcilationRepositoryEloquent extends BaseRepository implements Concilatio
 
     public function processReturn(array $attributes)
     {
-#Definindo conteúdo da requisição e tipos de respostas aceitas
+        #Definindo conteúdo da requisição e tipos de respostas aceitas
         $accept_header = array('Accept: application/json','Content-Type: multipart/form-data');
-
-#Estou enviando esse formato de dados
+        #Estou enviando esse formato de dados
         $headers = $accept_header;
-
-#Configurações do envio
+        #Configurações do envio
         if(config('app.env') == 'local'){
             $url = 'https://sandbox.boletocloud.com/api/v1/arquivos/cnab/retornos';
             $api_key = 'api-key_W1J1KwcnNor-4VHP58KLuXv8UcKqIY31p8AwIuXPw1s=';
@@ -90,7 +87,6 @@ class ConcilationRepositoryEloquent extends BaseRepository implements Concilatio
             $url = 'https://app.boletocloud.com/api/v1/arquivos/cnab/retornos';
             $api_key = 'api-key_4EdpeTuf5MwzipcmXYTmCdv5wqYLRCgT3shDb41Pzu4=';
         }
-
         $data_create = array(
             'arquivo' => $attributes['file'],
         );
@@ -108,7 +104,6 @@ class ConcilationRepositoryEloquent extends BaseRepository implements Concilatio
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);# Basic Authorization
         curl_setopt($ch, CURLOPT_HEADER, true);#Define que os headers estarão na resposta
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-
 //        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); #Para uso com https
 //        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); #Para uso com https
 
@@ -202,6 +197,15 @@ class ConcilationRepositoryEloquent extends BaseRepository implements Concilatio
             if($current = Boleto::where('token',$v['token'])->first()){
                 $ocorrencias = $v['ocorrencias'];
                 foreach ($ocorrencias as $k2 => $v2){
+                    //Relacionamento das ocorrencias
+                    $current->ocorrencias()->save(new BoletoOcorrencia([
+                        'situacao' => $v2['situacao'],
+                        'data' => $v2['data'],
+                        'descricao' => $v2['descricao'],
+                        'motivos' => $v2['motivos'],
+                        'info' => $v2['info']
+                    ]));
+                    //Se for liquidacao mudo o status do boleto para pago ( 1 )
                     if($v2['situacao'] == 'LIQUIDACAO'){
                         $current->situacao = 1;
                         $current->save();
