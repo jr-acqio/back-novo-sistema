@@ -24,7 +24,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view('access::index');
+        return $this->repository->all();
     }
     /**
      * Show the form for creating a new resource.
