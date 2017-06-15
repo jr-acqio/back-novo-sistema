@@ -171,6 +171,7 @@ return [
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         OwenIt\Auditing\AuditingServiceProvider::class,
         Prettus\Repository\Providers\RepositoryServiceProvider::class,
+        Zizaco\Entrust\EntrustServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -232,6 +233,7 @@ return [
         'Module' => Nwidart\Modules\Facades\Module::class,
         'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
+        'Entrust'    => Zizaco\Entrust\EntrustFacade::class,
     ],
 
 ];
