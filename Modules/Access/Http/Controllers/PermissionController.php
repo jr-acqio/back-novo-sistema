@@ -5,16 +5,28 @@ namespace Modules\Access\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Modules\Access\Contracts\PermissionRepository;
+use OwenIt\Auditing\Drivers\Database;
+use OwenIt\Auditing\Events\Auditing;
+use Prettus\Validator\Exceptions\ValidatorException;
 
 class PermissionController extends Controller
 {
+    private $repository, $auditor;
+
+    function __construct(PermissionRepository $repository, Database $auditor)
+    {
+        $this->repository = $repository;
+        $this->auditor = $auditor;
+    }
+
     /**
      * Display a listing of the resource.
      * @return Response
      */
     public function index()
     {
-        return view('access::index');
+        return $this->repository->all();
     }
 
     /**
@@ -33,6 +45,17 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
+        try{
+            if($permission = $this->repository->create($request->all())){
+                event(new Auditing($permission,$this->auditor));
+                return response()->json('Permissão '. $permission->name . ' registrada com sucesso!',200);
+            }
+        }catch (ValidatorException $e){
+            return response()->json($e->getMessageBag(),422);
+        }
+        catch (\Exception $e){
+            return response()->json($e->getMessage(),400);
+        }
     }
 
     /**

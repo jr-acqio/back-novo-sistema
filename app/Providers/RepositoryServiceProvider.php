@@ -28,6 +28,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(\Modules\Boletos\Contracts\ConcilationRepository::class, \Modules\Boletos\Repositories\ConcilationRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\BoletoOcorrenciaRepository::class, \App\Repositories\BoletoOcorrenciaRepositoryEloquent::class);
         $this->app->bind(\Modules\Access\Contracts\RoleRepository::class, \Modules\Access\Repositories\RoleRepositoryEloquent::class);
+        $this->app->bind(\Modules\Access\Contracts\PermissionRepository::class, \Modules\Access\Repositories\PermissionRepositoryEloquent::class);
+
         //:end-bindings:
     }
 }
