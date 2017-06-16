@@ -61,7 +61,7 @@ class RoleRepositoryEloquent extends BaseRepository implements RoleRepository
         if($this->model->save()){
             return $this->model;
         }else{
-            throw new Exception("Erro ao gravar registro no banco!");
+            throw new \Exception("Erro ao gravar registro no banco!");
         }
     }
 }

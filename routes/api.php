@@ -14,5 +14,6 @@ use Illuminate\Http\Request;
 */
 
 Route::middleware('jwt.auth')->get('/me', function (Request $request) {
-    return $request->user();
+    $u = \Modules\Access\Entities\User::with('roles')->find($request->user()->id);
+    return $u;
 });
