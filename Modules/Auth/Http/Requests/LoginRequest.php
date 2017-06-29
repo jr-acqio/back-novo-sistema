@@ -15,7 +15,7 @@ class LoginRequest extends FormRequest
     {
         return [
             'email' => 'required',
-            'captcha' => 'required',
+//            'captcha' => 'required',
             'password' => 'required'
         ];
     }
@@ -25,7 +25,7 @@ class LoginRequest extends FormRequest
         return [
             'email.required' => 'O campo :attribute é obrigatório',
             'password.required' => 'O campo :attribute é obrigatório',
-            'captcha.required' => ':attribute é obrigatório'
+//            'captcha.required' => ':attribute é obrigatório'
         ];
     }
     /**

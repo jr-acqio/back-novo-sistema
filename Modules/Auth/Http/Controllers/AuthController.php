@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 
 use JWTAuth;
+use Modules\Access\Entities\User;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Validator;
 use Modules\Auth\Http\Requests\LoginRequest;
@@ -34,10 +35,9 @@ class AuthController extends Controller
             $data = [];
             $meta = [];
 
-            // $data['user'] = $request->user();
-            $meta['access_token'] = $token;
+            $meta['token'] = $token;
             $meta['expires_in'] = $expired;
-
+            $meta['user'] = User::where('email',$request->only('email'))->with('roles')->first();
             return response()->json($meta);
         }
     }
