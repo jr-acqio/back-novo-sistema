@@ -81,7 +81,6 @@ class UserController extends Controller
         try{
             if($userUpdated = $this->repository->update($request->all(), $id)){
                 event(new Auditing($userUpdated,$this->auditor));
-                //var_dump($this->repository->with('roles')->find($userUpdated->id));
                 return response()->json(['user'=>$this->repository->with('roles')->find($userUpdated->id)],200);
             }
         }catch (ValidatorException $e){
