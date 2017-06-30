@@ -97,8 +97,6 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         //Removendo as roles do user
         $model->roles()->sync([]);
 
-
-
         unset($attributes['password_confirmation']);
         $model->fill($attributes);
         $model->save();
