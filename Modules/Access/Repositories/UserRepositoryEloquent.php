@@ -65,6 +65,10 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         $this->model->email = $attributes['email'];
 
         if($this->model->save()){
+            //Adicionando novas Roles no usuario
+            foreach($attributes['roles'] as $r){
+                $this->model->attachRole($r);
+            }
             return $this->model;
         }else{
             throw new Exception("Erro ao gravar registro no banco!");
@@ -93,14 +97,15 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         //Removendo as roles do user
         $model->roles()->sync([]);
 
-        //Inserindo novas Roles
-        foreach($attributes['roles'] as $r){
-            $model->attachRole($r);
-        }
+
 
         unset($attributes['password_confirmation']);
         $model->fill($attributes);
         $model->save();
+        //Inserindo novas Roles
+        foreach($attributes['roles'] as $r){
+            $model->attachRole($r);
+        }
         return $model;
     }
 
