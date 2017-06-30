@@ -3,8 +3,10 @@
 namespace Modules\Access\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Modules\Access\Entities\Permission;
 use Modules\Access\Entities\Role;
 use Modules\Access\Entities\User;
+use Modules\Access\Validators\PermissionValidator;
 
 class RoleTableSeeder extends Seeder
 {

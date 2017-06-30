@@ -13,13 +13,15 @@ class UserValidator extends LaravelValidator
             'name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed',
-            'password_confirmation' => 'required'
+            'password_confirmation' => 'required',
+            'roles' => 'required'
         ],
         ValidatorInterface::RULE_UPDATE => [
             'name' => 'required',
             'email' => 'required|email|unique:users,id',
             'password' => 'required|confirmed',
-            'password_confirmation' => 'required'
+            'password_confirmation' => 'required',
+            'roles' => 'required'
         ],
    ];
 }
