@@ -41,10 +41,11 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+
         try{
             if($user = $this->repository->create($request->all())){
                 event(new Auditing($user,$this->auditor));
-                return response()->json('Usuário '. $user->name . ' registrado com sucesso!',200);
+                return response()->json($user->with('roles'),200);
             }
         }catch (ValidatorException $e){
             return response()->json($e->getMessageBag(),422);
@@ -80,7 +81,7 @@ class UserController extends Controller
         try{
             if($userUpdated = $this->repository->update($request->all(), $id)){
                 event(new Auditing($userUpdated,$this->auditor));
-                return response()->json(['msg' => 'Usuário '. $userUpdated->name . ' Atualizado com sucesso!', 'user'=>$userUpdated],200);
+                return response()->json(['user'=>$this->repository->with('roles')->find($userUpdated->id)],200);
             }
         }catch (ValidatorException $e){
             return response()->json($e->getMessageBag(),422);

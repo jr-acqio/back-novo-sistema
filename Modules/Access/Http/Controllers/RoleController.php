@@ -48,7 +48,7 @@ class RoleController extends Controller
         try{
             if($role = $this->repository->create($request->all())){
                 event(new Auditing($role,$this->auditor));
-                return response()->json('Papel '. $role->name . ' registrado com sucesso!',200);
+                return response()->json($role ,200);
             }
         }catch (ValidatorException $e){
             return response()->json($e->getMessageBag(),422);
