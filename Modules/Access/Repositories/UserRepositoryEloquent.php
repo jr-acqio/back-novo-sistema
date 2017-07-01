@@ -115,4 +115,14 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         return $user;
     }
 
+    public function enabledUser($id)
+    {
+        try{
+            $user = $this->model->withTrashed()->findOrFail($id);
+            $user->restore();
+            return $user;
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
+    }
 }
