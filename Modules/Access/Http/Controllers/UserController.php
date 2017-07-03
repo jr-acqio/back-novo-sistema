@@ -24,7 +24,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        return $this->repository->with('roles')->all();
+        return $this->repository->with('roles')->scopeQuery(function($query){
+            return $query->withTrashed();
+        })
+            ->all();
     }
     /**
      * Show the form for creating a new resource.
@@ -45,7 +48,7 @@ class UserController extends Controller
         try{
             if($user = $this->repository->create($request->all())){
                 event(new Auditing($user,$this->auditor));
-                return response()->json($user->with('roles'),200);
+                return response()->json($user,200);
             }
         }catch (ValidatorException $e){
             return response()->json($e->getMessageBag(),422);
@@ -79,6 +82,13 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         try{
+            //Se tiver o parametro enabled = 1 irá reativar o usuário
+            if($request->enabled) {
+                $u = $this->repository->enabledUser($id);
+                event(new Auditing($u,$this->auditor));
+                return response()->json(['user'=>$u],200);
+            }
+            // Se chegar aqui é por que é atualização de dados
             if($userUpdated = $this->repository->update($request->all(), $id)){
                 event(new Auditing($userUpdated,$this->auditor));
                 return response()->json(['user'=>$this->repository->with('roles')->find($userUpdated->id)],200);
@@ -90,13 +100,21 @@ class UserController extends Controller
             return response()->json(['error'=>$e->getMessage()],400);
         }
     }
+
     /**
      * Remove the specified resource from storage.
-     * @return Response
+     * @param User $user
+     * @return User
      */
-    public function destroy()
+    public function destroy($id)
     {
+        try{
+            $u = $this->repository->find($id);
+            $u->delete();
+            return $u;
+        }catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
     }
-
 
 }

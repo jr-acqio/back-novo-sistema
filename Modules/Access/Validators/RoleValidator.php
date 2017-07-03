@@ -15,7 +15,9 @@ class RoleValidator extends LaravelValidator
             'description' => 'required'
         ],
         ValidatorInterface::RULE_UPDATE => [
-
+            'name' => 'required|unique:roles,id,:id',
+            'display_name' => 'required',
+            'description' => 'required'
         ],
    ];
 }

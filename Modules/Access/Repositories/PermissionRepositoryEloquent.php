@@ -2,6 +2,7 @@
 
 namespace Modules\Access\Repositories;
 
+use Modules\Access\Entities\Role;
 use Modules\Access\Validators\PermissionValidator;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;

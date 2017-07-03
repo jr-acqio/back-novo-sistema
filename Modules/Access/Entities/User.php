@@ -2,6 +2,7 @@
 
 namespace Modules\Access\Entities;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use OwenIt\Auditing\Auditable;
@@ -10,7 +11,10 @@ use Zizaco\Entrust\Traits\EntrustUserTrait;
 
 class User extends Authenticatable implements AuditableContract
 {
-    use Notifiable, Auditable, EntrustUserTrait;
+    use Notifiable, Auditable, EntrustUserTrait, SoftDeletes
+    {
+        SoftDeletes::restore insteadof EntrustUserTrait;
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -29,6 +33,8 @@ class User extends Authenticatable implements AuditableContract
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    protected $dates = ['deleted_at'];
 
     public function resolveUserId()
     {
