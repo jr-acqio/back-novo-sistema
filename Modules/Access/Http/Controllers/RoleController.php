@@ -5,6 +5,7 @@ namespace Modules\Access\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Mockery\Exception;
 use Modules\Access\Contracts\RoleRepository;
 use OwenIt\Auditing\Drivers\Database;
 use OwenIt\Auditing\Events\Auditing;
@@ -62,9 +63,14 @@ class RoleController extends Controller
      * Show the specified resource.
      * @return Response
      */
-    public function show()
+    public function show($id)
     {
-        return view('access::show');
+        try{
+            $role = $this->repository->with('perms')->find($id);
+            return response()->json($role,200);
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
     }
 
     /**
@@ -79,10 +85,23 @@ class RoleController extends Controller
     /**
      * Update the specified resource in storage.
      * @param  Request $request
+     * @param $id
      * @return Response
      */
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
+        try{
+            $role = $this->repository->update($request->all(), $id);
+            event(new Auditing($role,$this->auditor));
+            return response()->json($role ,200);
+        }
+        catch (ValidatorException $e){
+            return response()->json($e->getMessageBag(),422);
+        }
+        catch (\Exception $e){
+            return response()->json(['error'=>$e->getMessage()], 422);
+        }
+
     }
 
     /**
