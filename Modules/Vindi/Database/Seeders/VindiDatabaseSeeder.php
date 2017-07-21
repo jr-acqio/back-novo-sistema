@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\Access\Database\Seeders;
+namespace Modules\Vindi\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 
-class AccessDatabaseSeeder extends Seeder
+class VindiDatabaseSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,7 +15,7 @@ class AccessDatabaseSeeder extends Seeder
     public function run()
     {
         Model::unguard();
-        $this->call(RoleTableSeeder::class);
-        $this->call(UsersTableSeeder::class);
+
+        // $this->call("OthersTableSeeder");
     }
 }

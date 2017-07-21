@@ -24,9 +24,6 @@ class RoleTableSeeder extends Seeder
         $admin->description  = 'Usuário com todas as permissões.'; // optional
         $admin->save();
 
-        $user = User::where('name', '=', 'Lucas Dantas')->first();
-        $user->attachRole($admin);
-
         $deletarUsuario = new Permission();
         $deletarUsuario->name = 'delete-user';
         $deletarUsuario->display_name = 'Deleta usuário.';

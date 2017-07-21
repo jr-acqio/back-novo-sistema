@@ -13,6 +13,7 @@
         "prettus/l5-repository": "^2.6",
         "prettus/laravel-validation": "1.1.*",
         "tymon/jwt-auth": "0.5.*",
+        "vindi/vindi-php": "^1.0",
         "zizaco/entrust": "dev-master"
     },
     "require-dev": {

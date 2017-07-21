@@ -20,7 +20,7 @@
 */
 
 require __DIR__.'/../bootstrap/autoload.php';
-
+putenv('VINDI_API_KEY=ao30n0dmL7bCtw2deClzRkwwbNcr1u_q');
 /*
 |--------------------------------------------------------------------------
 | Turn On The Lights
