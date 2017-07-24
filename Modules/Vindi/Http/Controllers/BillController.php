@@ -21,19 +21,22 @@ class BillController extends Controller
      * Display a listing of the resource.
      * @return Response
      */
-    public function index()
+    public function index(Request $request)
     {
+//        dd($request->all());
         $bills = $this->bill->all([
             'sort_by'    => 'created_at',
             'sort_order' => 'desc',
-            'query' => 'id:7953262'
-//            'query' => 'customer_name_eq:Marcos'
+            'per_page' => $request->length,
+            'page' => $request->draw,
+//            'query' => 'id:8772609'
         ]);
-        dd($bills);
-        dd($this->bill->getLastResponse());
-        dd($this->bill->get(7953262));
-        return dd($bills);
-//        return view('vindi::index');
+        return response()->json([
+           'draw' => intval($request->draw),
+            'recordsTotal' => intval($this->bill->getLastResponse()->getHeader('Total')[0]),
+            'recordsFiltered' => intval($this->bill->getLastResponse()->getHeader('Total')[0]),
+            'data' => $bills
+        ]);
     }
 
     /**
@@ -60,6 +63,26 @@ class BillController extends Controller
      */
     public function show()
     {
+        $bills = array();
+
+        $bills = array_merge($bills, $this->bill->all([
+            'sort_by'    => 'created_at',
+            'sort_order' => 'desc',
+            'per_page' => 50,
+            'page' => 1
+        ]));
+        $max = ceil($this->bill->getLastResponse()->getHeader('Total')[0] / $this->bill->getLastResponse()->getHeader('Per-Page')[0]);
+        $i = 2;
+        while ($i <= $max) {
+            $bills = array_merge($bills, $this->bill->all([
+                'sort_by'    => 'created_at',
+                'sort_order' => 'desc',
+                'per_page' => 50,
+                'page' => $i
+            ]));
+            $i++;
+        }
+        dd($bills);
         return view('vindi::show');
     }
 
