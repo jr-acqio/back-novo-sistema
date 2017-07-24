@@ -26,7 +26,7 @@ class SubscriptionController extends Controller
             'sort_by'    => 'created_at',
             'sort_order' => 'desc'
         ]);
-        return dd($subscriptions);
+        return $subscriptions;
 //        return view('vindi::index');
     }
 
