@@ -29,7 +29,7 @@ class BillController extends Controller
             'sort_order' => 'desc',
             'per_page' => $request->length,
             'page' => $request->draw,
-//            'query' => 'id:8772609'
+//            'query' => 'id:8779346'
         ]);
         return response()->json([
            'draw' => intval($request->draw),
@@ -63,25 +63,27 @@ class BillController extends Controller
      */
     public function show()
     {
-        $bills = array();
+//        $bills = array();
 
-        $bills = array_merge($bills, $this->bill->all([
+        $bills = $this->bill->all([
             'sort_by'    => 'created_at',
             'sort_order' => 'desc',
             'per_page' => 50,
-            'page' => 1
-        ]));
-        $max = ceil($this->bill->getLastResponse()->getHeader('Total')[0] / $this->bill->getLastResponse()->getHeader('Per-Page')[0]);
-        $i = 2;
-        while ($i <= $max) {
-            $bills = array_merge($bills, $this->bill->all([
-                'sort_by'    => 'created_at',
-                'sort_order' => 'desc',
-                'per_page' => 50,
-                'page' => $i
-            ]));
-            $i++;
-        }
+            'page' => 1,
+            'query' => 'id:8779346'
+        ]);
+//        dd($this->bill->getLastResponse());
+//        $max = ceil($this->bill->getLastResponse()->getHeader('Total')[0] / $this->bill->getLastResponse()->getHeader('Per-Page')[0]);
+//        $i = 2;
+//        while ($i <= $max) {
+//            $bills = array_merge($bills, $this->bill->all([
+//                'sort_by'    => 'created_at',
+//                'sort_order' => 'desc',
+//                'per_page' => 50,
+//                'page' => $i
+//            ]));
+//            $i++;
+//        }
         dd($bills);
         return view('vindi::show');
     }
