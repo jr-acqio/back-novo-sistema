@@ -20,8 +20,8 @@ class UserValidator extends LaravelValidator
             'name' => 'required',
             'email' => 'required|email|unique:users,id',
             'password' => 'required|confirmed',
-            'password_confirmation' => 'required',
-            'roles' => 'required'
+            'password_confirmation' => 'required'
+//            'roles' => 'required'
         ],
    ];
 }
