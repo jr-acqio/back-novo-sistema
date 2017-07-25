@@ -9,6 +9,7 @@ use Modules\Access\Entities\User;
 use OwenIt\Auditing\Drivers\Database;
 use OwenIt\Auditing\Events\Auditing;
 use Prettus\Validator\Exceptions\ValidatorException;
+
 class UserController extends Controller
 {
     private $auditor;
@@ -61,9 +62,17 @@ class UserController extends Controller
      * Show the specified resource.
      * @return Response
      */
-    public function show()
+    public function show($id)
     {
-        return view('access::show');
+        try{
+            $user = $this->repository->with('roles')->scopeQuery(function($query){
+                return $query->withTrashed();
+            })->find($id);
+            return response()->json($user,200);
+        }
+        catch(Exception $e){
+            return response()->json($e->getMessage());
+        }
     }
     /**
      * Show the form for editing the specified resource.
@@ -91,7 +100,11 @@ class UserController extends Controller
             // Se chegar aqui é por que é atualização de dados
             if($userUpdated = $this->repository->update($request->all(), $id)){
                 event(new Auditing($userUpdated,$this->auditor));
-                return response()->json(['user'=>$this->repository->with('roles')->find($userUpdated->id)],200);
+                dd($userUpdated);
+                $u = $this->repository->with('roles')->scopeQuery(function ($query){
+                    return $query->withTrashed();
+                })->find($userUpdated->id);
+                return response()->json(['user'=>$u],200);
             }
         }catch (ValidatorException $e){
             return response()->json($e->getMessageBag(),422);
