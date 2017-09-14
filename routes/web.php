@@ -12,6 +12,11 @@
 */
 
 Route::get('/', function () {
+
+    $bank_billets = BoletoSimples\BankBillet::all(['page' => 1, 'per_page' => 50]);
+    foreach($bank_billets as $bank_billet) {
+        dd($bank_billet->attributes());
+    }
     return view('index');
 });
 

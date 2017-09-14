@@ -5,4 +5,5 @@ Route::group(['middleware' => 'jwt.auth', 'prefix' => 'api', 'namespace' => 'Mod
 {
     Route::resource('conciliation','ConciliationController',['only'=>'store']);
 //    Route::post('boletos/conciliation','BoletosController@processReturn')->name('boletos.conciliation');
+    Route::resource('boleto-simples', 'BoletoSimplesController', ['only'=> 'store']);
 });
