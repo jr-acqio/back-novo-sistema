@@ -2,6 +2,7 @@
 
 namespace Modules\Access\Repositories;
 
+use Illuminate\Support\Facades\Auth;
 use Mockery\Exception;
 use Modules\Access\Contracts\UserRepository;
 use OwenIt\Auditing\Events\Auditing;
@@ -74,10 +75,14 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
             throw new Exception("Erro ao gravar registro no banco!");
         }
     }
+
+    /**
+     * @param array $attributes
+     * @param $id
+     * @return mixed
+     */
     public function update(array $attributes, $id)
     {
-        $this->applyScope();
-
         if (!is_null($this->validator)) {
             // we should pass data that has been casts by the model
             // to make sure data type are same because validator may need to use
@@ -87,23 +92,32 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
             $this->validator->with($attributes)->setId($id)->passesOrFail(ValidatorInterface::RULE_UPDATE);
         }
 
-        if ($this->model->where('email',$attributes['email'])->where('id','<>',$id)->get()->count() >= 1){
+        if ($this->model->withTrashed()->where('email',$attributes['email'])->where('id','<>',$id)->get()->count() >= 1){
             throw new Exception('Usuário '. $attributes['email'].' já cadastrado no Sistema');
         }
-
+        $model = $this->model->withTrashed()->findOrFail($id);
+        // Se tiver desativado, restaura para fazer a atualização
+        if($model->deleted_at != null) {
+            $model->restore();
+        }
         $attributes['password'] = bcrypt($attributes['password']);
-        $model = $this->model->findOrFail($id);
-
-        //Removendo as roles do user
-//        $model->roles()->sync([]);
 
         unset($attributes['password_confirmation']);
         $model->fill($attributes);
         $model->save();
+
         //Inserindo novas Roles
-//        foreach($attributes['roles'] as $r){
-//            $model->attachRole($r);
-//        }
+        if(count($attributes['roles'])) {
+            //Removendo as roles do user
+            $model->roles()->sync([]);
+            foreach($attributes['roles'] as $r){
+                $model->attachRole($r);
+            }
+        }
+        // Se usuário ativo for diferente de true ele inativa o usuário novamente
+        if(!$attributes['active']) {
+            $model->delete();
+        }
         return $model;
     }
 
@@ -124,5 +138,9 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         }catch(Exception $e){
             throw new Exception($e->getMessage());
         }
+    }
+    public function disabledUser($user){
+        $user->delete();
+        return $user;
     }
 }
