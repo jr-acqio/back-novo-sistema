@@ -17,11 +17,12 @@ class BoletoSimplesController extends Controller
                 "environment" => 'sandbox', // default: 'sandbox'
                 "access_token" => 'c5a0c8d11c2e5c19284b9a6db338188f7dcbd15eb61152022ad9ffde0d8cb42e'
             ));
+        }else{
+            \BoletoSimples::configure(array(
+                "environment" => 'production', // default: 'sandbox'
+                "access_token" => 'd223192e8ed286b873208881f0e171693794803c33628729bd3141d612a005cd'
+            ));
         }
-        \BoletoSimples::configure(array(
-            "environment" => 'production', // default: 'sandbox'
-            "access_token" => 'd223192e8ed286b873208881f0e171693794803c33628729bd3141d612a005cd'
-        ));
     }
 
     /**
@@ -63,7 +64,7 @@ class BoletoSimplesController extends Controller
             'customer_neighborhood' => $request->customer_neighborhood,
             'customer_person_name' => $request->customer_person_name,
             'customer_person_type' => 'individual',
-            'customer_phone_number' => $request->customer_phone_number,
+            'customer_phone_number' => $this->formatarTelefone($request->customer_phone_number),
             'customer_state' => $request->customer_state,
             'customer_zipcode' => $request->customer_zipcode
         ));
@@ -106,5 +107,13 @@ class BoletoSimplesController extends Controller
      */
     public function destroy()
     {
+    }
+
+    private function formatarTelefone($telefone)
+    {
+        $telefone = str_replace('(', '', $telefone);
+        $telefone = str_replace(')', '', $telefone);
+        $telefone = str_replace(' ', '', $telefone);
+        return $telefone;
     }
 }
