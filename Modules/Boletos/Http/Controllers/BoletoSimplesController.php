@@ -31,7 +31,12 @@ class BoletoSimplesController extends Controller
      */
     public function index()
     {
-        return view('boletos::index');
+        $bank_billets = \BoletoSimples\BankBillet::all(['page' => 1, 'per_page' => 250]);
+        $billets = array();
+        foreach($bank_billets as $bank_billet) {
+            $billets[] = $bank_billet->attributes();
+        }
+        return response($billets, 200);
     }
 
     /**
